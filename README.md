@@ -95,9 +95,17 @@ nano .env
 PORT=3000
 NODE_ENV=development
 
-# MongoDB Configuration
-MONGODB_URI=mongodb://localhost:27017/paw-scan
-MONGODB_URI_TEST=mongodb://localhost:27017/paw-scan-test
+# MongoDB Configuration (REQUIRED - no defaults)
+MONGO_USER=your_secure_username
+MONGO_PASSWORD=your_secure_password
+MONGO_TEST_USER=your_test_username
+MONGO_TEST_PASSWORD=your_test_password
+MONGO_ADMIN_USERNAME=your_admin_username
+MONGO_ADMIN_PASSWORD=your_admin_password
+
+# Connection Strings
+MONGODB_URI=mongodb://{MONGO_USER}:{MONGO_PASSWORD}@localhost:27017/paw_scan?authSource=paw_scan
+MONGODB_URI_TEST=mongodb://{MONGO_TEST_USER}:{MONGO_TEST_PASSWORD}@localhost:27018/paw_scan_test?authSource=paw_scan_test
 
 # API Configuration
 API_VERSION=v1
@@ -111,22 +119,22 @@ CORS_ORIGIN=http://localhost:3000
 LOG_LEVEL=info
 ```
 
-### 3. Start MongoDB
+### 3. Setup MongoDB Init Scripts
 ```bash
-# macOS with Homebrew
-brew services start mongodb-community
-
-# Ubuntu/Debian
-sudo systemctl start mongod
-
-# Windows
-net start MongoDB
-
-# Or use Docker
-docker run -d -p 27017:27017 --name mongodb mongo:6.0
+# Generate secure MongoDB initialization scripts
+./scripts/setup-mongo-init.sh
 ```
 
-### 4. Run the Application
+### 4. Start MongoDB
+```bash
+# Start MongoDB with Docker Compose
+npm run docker:up
+
+# Or use the simple dev setup (no authentication)
+npm run dev:simple
+```
+
+### 5. Run the Application
 ```bash
 # Development mode (with hot reload)
 npm run dev

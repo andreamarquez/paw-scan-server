@@ -26,18 +26,29 @@ jobs:
     - name: Install dependencies
       run: npm ci
 
+    - name: Create environment file for tests
+      run: |
+        cp env.example .env
+        echo "NODE_ENV=test" >> .env
+        echo "MONGODB_URI_TEST=mongodb://test_user:test_password@localhost:27018/paw_scan_test?authSource=paw_scan_test" >> .env
+        echo "MONGO_USER=test_user" >> .env
+        echo "MONGO_PASSWORD=test_password" >> .env
+        echo "MONGO_TEST_USER=test_user" >> .env
+        echo "MONGO_TEST_PASSWORD=test_password" >> .env
+        echo "MONGO_ADMIN_USERNAME=admin" >> .env
+        echo "MONGO_ADMIN_PASSWORD=admin_password" >> .env
+
+    - name: Setup MongoDB init scripts
+      run: |
+        chmod +x ./scripts/setup-mongo-init.sh
+        ./scripts/setup-mongo-init.sh
+
     - name: Start MongoDB with Docker Compose
-      run: npm run docker:test:up
+      run: docker compose -f docker-compose.test.yml up -d
 
     - name: Wait for MongoDB to be ready
       run: |
         timeout 60 bash -c 'until docker exec paw-scan-mongodb-test mongosh --eval "db.adminCommand(\"ping\")" > /dev/null 2>&1; do sleep 2; done'
-
-    - name: Create environment file
-      run: |
-        cp env.example .env
-        echo "MONGODB_URI_TEST=mongodb://paw_scan_test_user:paw_scan_test_password@localhost:27018/paw_scan_test?authSource=paw_scan_test" >> .env
-        echo "NODE_ENV=test" >> .env
 
     - name: Run linter
       run: npm run lint
@@ -60,7 +71,7 @@ jobs:
 
     - name: Clean up Docker containers
       if: always()
-      run: npm run docker:test:clean
+      run: docker compose -f docker-compose.test.yml down -v --remove-orphans
 
   build:
     needs: test
