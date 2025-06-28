@@ -1,4 +1,5 @@
 import mongoose, { Document, Schema } from 'mongoose';
+import { v4 as uuidv4 } from 'uuid';
 import { Product } from '../types';
 
 /**
@@ -25,6 +26,10 @@ import { Product } from '../types';
  */
 const productSchema = new Schema<Product & Document>(
   {
+    _id: {
+      type: String,
+      default: () => uuidv4(),
+    },
     name: {
       type: String,
       required: [true, 'Product name is required'],
