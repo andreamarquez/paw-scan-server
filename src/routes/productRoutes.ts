@@ -209,7 +209,7 @@ router.get('/:barcode', validateBarcode, productController.getProductByBarcode);
  *       content:
  *         application/json:
  *           schema:
- *             $ref: '#/components/schemas/Product'
+ *             $ref: '#/components/schemas/CreateProduct'
  *     responses:
  *       201:
  *         description: Product created successfully

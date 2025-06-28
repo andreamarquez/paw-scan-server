@@ -206,7 +206,8 @@ describe('Product Routes Integration Tests', () => {
     });
 
     it('should return 404 for non-existent product', async () => {
-      const fakeId = '507f1f77bcf86cd799439011';
+      const fakeId = '550e8400-e29b-41d4-a716-446655440000';
+      
       const response = await request(app)
         .put(`${baseUrl}/${fakeId}`)
         .send({ name: 'Updated' })
@@ -241,7 +242,8 @@ describe('Product Routes Integration Tests', () => {
     });
 
     it('should return 404 for non-existent product', async () => {
-      const fakeId = '507f1f77bcf86cd799439011';
+      const fakeId = '550e8400-e29b-41d4-a716-446655440000';
+      
       const response = await request(app)
         .delete(`${baseUrl}/${fakeId}`)
         .expect(404);
