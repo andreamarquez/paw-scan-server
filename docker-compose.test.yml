@@ -1,0 +1,26 @@
+services:
+  mongodb-test:
+    image: mongo:7.0
+    container_name: paw-scan-mongodb-test
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: ${MONGO_ADMIN_USERNAME}
+      MONGO_INITDB_ROOT_PASSWORD: ${MONGO_ADMIN_PASSWORD}
+      MONGO_INITDB_DATABASE: paw_scan_test
+      MONGO_USER: ${MONGO_TEST_USER}
+      MONGO_PASSWORD: ${MONGO_TEST_PASSWORD}
+    ports:
+      - "27018:27017"  # Different port to avoid conflicts
+    volumes:
+      - ./scripts/mongo-init-test.js:/docker-entrypoint-initdb.d/mongo-init-test.js:ro
+    networks:
+      - paw-scan-test-network
+    healthcheck:
+      test: ["CMD", "mongosh", "--eval", "db.adminCommand('ping')"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+
+networks:
+  paw-scan-test-network:
+    driver: bridge 

@@ -30,7 +30,8 @@
     "docker:dev:up": "docker-compose -f docker-compose.dev.yml up -d",
     "docker:dev:down": "docker-compose -f docker-compose.dev.yml down",
     "docker:dev:clean": "docker-compose -f docker-compose.dev.yml down -v --remove-orphans",
-    "dev:simple": "npm run docker:dev:up && npm run dev"
+    "dev:simple": "npm run docker:dev:up && npm run dev",
+    "setup:mongo": "rm -f ./scripts/mongo-init.js && ./scripts/setup-mongo-init.sh"
   },
   "keywords": ["pet", "food", "rating", "api", "typescript", "express", "mongodb"],
   "author": "",
