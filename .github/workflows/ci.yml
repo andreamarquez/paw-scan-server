@@ -53,8 +53,13 @@ jobs:
     - name: Run linter
       run: npm run lint
 
-    - name: Run tests
-      run: npm test
+    - name: Run unit tests
+      run: npm run test:unit
+      env:
+        CI: true
+
+    - name: Run integration tests
+      run: npm run test:integration
       env:
         CI: true
 
