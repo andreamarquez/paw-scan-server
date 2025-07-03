@@ -24,245 +24,41 @@ const options = {
         Ingredient: {
           type: 'object',
           properties: {
-            name: {
-              type: 'string',
-              description: 'Name of the ingredient',
-            },
-            status: {
-              type: 'string',
-              enum: ['excellent', 'good', 'fair', 'poor'],
-              description: 'Quality status of the ingredient',
-            },
-            description: {
-              type: 'string',
-              description: 'Description of the ingredient',
-            },
+            id: { type: 'string', description: 'UUID for the ingredient' },
+            name: { type: 'string', description: 'Name of the ingredient' },
+            status: { type: 'string', enum: ['excellent', 'good', 'fair', 'poor'], description: 'Quality status' },
+            description: { type: 'string', description: 'Description of the ingredient' },
           },
           required: ['name', 'status', 'description'],
         },
         Product: {
           type: 'object',
           properties: {
-            id: {
-              type: 'string',
-              description: 'Unique identifier for the product (UUID)',
-            },
-            name: {
-              type: 'string',
-              description: 'Name of the product',
-            },
-            brand: {
-              type: 'string',
-              description: 'Brand name',
-            },
-            category: {
-              type: 'string',
-              description: 'Product category',
-            },
-            barcode: {
-              type: 'string',
-              description: 'Product barcode (8-14 digits)',
-            },
-            rating: {
-              type: 'number',
-              minimum: 0,
-              maximum: 10,
-              description: 'Product rating (0-10)',
-            },
-            reviewCount: {
-              type: 'number',
-              minimum: 0,
-              description: 'Number of reviews',
-            },
-            ingredients: {
-              type: 'array',
-              items: {
-                type: 'string',
-              },
-              description: 'List of ingredients',
-            },
-            nutritionalInfo: {
-              type: 'object',
-              properties: {
-                protein: {
-                  type: 'number',
-                  minimum: 0,
-                  maximum: 100,
-                  description: 'Protein content percentage',
-                },
-                fat: {
-                  type: 'number',
-                  minimum: 0,
-                  maximum: 100,
-                  description: 'Fat content percentage',
-                },
-                fiber: {
-                  type: 'number',
-                  minimum: 0,
-                  maximum: 100,
-                  description: 'Fiber content percentage',
-                },
-                moisture: {
-                  type: 'number',
-                  minimum: 0,
-                  maximum: 100,
-                  description: 'Moisture content percentage',
-                },
-              },
-              required: ['protein', 'fat', 'fiber', 'moisture'],
-            },
-            allergens: {
-              type: 'array',
-              items: {
-                type: 'string',
-              },
-              description: 'List of allergens',
-            },
-            lifeStage: {
-              type: 'array',
-              items: {
-                type: 'string',
-              },
-              description: 'Target life stages',
-            },
-            size: {
-              type: 'array',
-              items: {
-                type: 'string',
-              },
-              description: 'Available sizes',
-            },
-            price: {
-              type: 'number',
-              minimum: 0,
-              description: 'Product price',
-            },
-            imageUrl: {
-              type: 'string',
-              format: 'uri',
-              description: 'URL to product image',
-            },
-            description: {
-              type: 'string',
-              description: 'Product description',
-            },
-            createdAt: {
-              type: 'string',
-              format: 'date-time',
-              description: 'Creation timestamp',
-            },
-            updatedAt: {
-              type: 'string',
-              format: 'date-time',
-              description: 'Last update timestamp',
-            },
+            id: { type: 'string', description: 'UUID for the product' },
+            name: { type: 'string' },
+            barcode: { type: 'string' },
+            brand: { type: 'string' },
+            rating: { type: 'number' },
+            ingredients: { type: 'array', items: { $ref: '#/components/schemas/Ingredient' } },
+            imageUrl: { type: 'string' },
+            description: { type: 'string' },
+            createdAt: { type: 'string', format: 'date-time' },
+            updatedAt: { type: 'string', format: 'date-time' },
           },
-          required: ['name', 'brand', 'category', 'rating', 'reviewCount', 'ingredients', 'nutritionalInfo', 'allergens', 'lifeStage', 'size', 'price'],
+          required: ['id', 'name', 'brand', 'rating', 'ingredients', 'createdAt', 'updatedAt'],
         },
         CreateProduct: {
           type: 'object',
           properties: {
-            name: {
-              type: 'string',
-              description: 'Name of the product',
-            },
-            brand: {
-              type: 'string',
-              description: 'Brand name',
-            },
-            category: {
-              type: 'string',
-              description: 'Product category',
-            },
-            barcode: {
-              type: 'string',
-              description: 'Product barcode (8-14 digits)',
-            },
-            rating: {
-              type: 'number',
-              minimum: 0,
-              maximum: 10,
-              description: 'Product rating (0-10)',
-            },
-            reviewCount: {
-              type: 'number',
-              minimum: 0,
-              description: 'Number of reviews',
-            },
-            ingredients: {
-              type: 'array',
-              items: {
-                type: 'string',
-              },
-              description: 'List of ingredients',
-            },
-            nutritionalInfo: {
-              type: 'object',
-              properties: {
-                protein: {
-                  type: 'number',
-                  minimum: 0,
-                  maximum: 100,
-                  description: 'Protein content percentage',
-                },
-                fat: {
-                  type: 'number',
-                  minimum: 0,
-                  maximum: 100,
-                  description: 'Fat content percentage',
-                },
-                fiber: {
-                  type: 'number',
-                  minimum: 0,
-                  maximum: 100,
-                  description: 'Fiber content percentage',
-                },
-                moisture: {
-                  type: 'number',
-                  minimum: 0,
-                  maximum: 100,
-                  description: 'Moisture content percentage',
-                },
-              },
-              required: ['protein', 'fat', 'fiber', 'moisture'],
-            },
-            allergens: {
-              type: 'array',
-              items: {
-                type: 'string',
-              },
-              description: 'List of allergens',
-            },
-            lifeStage: {
-              type: 'array',
-              items: {
-                type: 'string',
-              },
-              description: 'Target life stages',
-            },
-            size: {
-              type: 'array',
-              items: {
-                type: 'string',
-              },
-              description: 'Available sizes',
-            },
-            price: {
-              type: 'number',
-              minimum: 0,
-              description: 'Product price',
-            },
-            imageUrl: {
-              type: 'string',
-              format: 'uri',
-              description: 'URL to product image',
-            },
-            description: {
-              type: 'string',
-              description: 'Product description',
-            },
+            name: { type: 'string' },
+            barcode: { type: 'string' },
+            brand: { type: 'string' },
+            rating: { type: 'number' },
+            ingredients: { type: 'array', items: { $ref: '#/components/schemas/Ingredient' } },
+            imageUrl: { type: 'string' },
+            description: { type: 'string' },
           },
-          required: ['name', 'brand', 'category', 'rating', 'reviewCount', 'ingredients', 'nutritionalInfo', 'allergens', 'lifeStage', 'size', 'price'],
+          required: ['name', 'brand', 'rating', 'ingredients'],
         },
         ApiResponse: {
           type: 'object',
