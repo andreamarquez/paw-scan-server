@@ -1,29 +1,22 @@
 import request from 'supertest';
 import app from '../../src/app';
 import { ProductModel } from '../../src/models/Product';
-import { CreateProductData } from '../../src/types';
 
 describe('Product Routes Integration Tests', () => {
   const baseUrl = '/api/v1/products';
 
-  const mockProductData: CreateProductData = {
+  const mockIngredient = {
+    id: '11111111-1111-1111-1111-111111111111',
+    name: 'Chicken',
+    status: 'excellent',
+    description: 'High-quality protein source.'
+  };
+  const mockProductData = {
     name: 'Premium Dog Food',
     brand: 'PetCo',
-    category: 'Dog Food',
     barcode: '1234567890123',
     rating: 8.5,
-    reviewCount: 150,
-    ingredients: ['Chicken', 'Rice', 'Vegetables'],
-    nutritionalInfo: {
-      protein: 25.0,
-      fat: 12.0,
-      fiber: 4.0,
-      moisture: 10.0,
-    },
-    allergens: ['Chicken'],
-    lifeStage: ['Adult'],
-    size: ['Medium'],
-    price: 29.99,
+    ingredients: [mockIngredient],
     imageUrl: 'https://example.com/image.jpg',
     description: 'High-quality premium dog food',
   };
@@ -44,7 +37,7 @@ describe('Product Routes Integration Tests', () => {
       expect(response.body.data.barcode).toBe(mockProductData.barcode);
       expect(response.body.data.brand).toBe(mockProductData.brand);
       expect(response.body.data.rating).toBe(mockProductData.rating);
-      expect(response.body.data.ingredients).toHaveLength(3);
+      expect(response.body.data.ingredients).toHaveLength(1);
       expect(response.body.message).toBe('Product created successfully');
     });
 
@@ -52,20 +45,9 @@ describe('Product Routes Integration Tests', () => {
       const invalidData = {
         name: '',
         brand: '',
-        category: '',
         rating: 15,
-        reviewCount: -1,
         ingredients: [],
-        nutritionalInfo: {
-          protein: -1,
-          fat: 150,
-          fiber: -5,
-          moisture: 200,
-        },
-        allergens: [],
-        lifeStage: [],
-        size: [],
-        price: -10,
+        imageUrl: '',
       };
 
       const response = await request(app)
