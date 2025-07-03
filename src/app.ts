@@ -43,6 +43,9 @@ if (process.env['NODE_ENV'] !== 'test') {
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 
+// Serve static files from the 'public' directory
+app.use('/static', express.static(path.join(__dirname, '..', 'public')));
+
 // Serve OpenAPI YAML file
 app.get('/openapi.yml', (_req, res) => {
   res.sendFile(path.join(__dirname, '../openapi.yml'));

@@ -68,6 +68,7 @@ const productSchema = new Schema<Product & Document>(
       type: Number,
       required: [true, 'Rating is required'],
       min: [0, 'Rating must be at least 0'],
+      // Fixme: max is 10, but we need to change it to 5
       max: [10, 'Rating cannot exceed 10'],
     },
     ingredients: {
