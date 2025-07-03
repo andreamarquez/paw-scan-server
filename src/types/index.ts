@@ -9,11 +9,9 @@ export type IngredientStatus = 'excellent' | 'good' | 'fair' | 'poor';
  * @interface Ingredient
  */
 export interface Ingredient {
-  /** The name of the ingredient */
+  id?: string;
   name: string;
-  /** The quality status of the ingredient */
   status: IngredientStatus;
-  /** A description of the ingredient and its benefits/concerns */
   description: string;
 }
 
@@ -22,24 +20,12 @@ export interface Ingredient {
  * @interface Product
  */
 export interface Product {
-  id: string;
+  id: string; // UUID
   name: string;
-  brand: string;
-  category: string;
   barcode?: string;
+  brand: string;
   rating: number;
-  reviewCount: number;
-  ingredients: string[];
-  nutritionalInfo: {
-    protein: number;
-    fat: number;
-    fiber: number;
-    moisture: number;
-  };
-  allergens: string[];
-  lifeStage: string[];
-  size: string[];
-  price: number;
+  ingredients: Ingredient[];
   imageUrl?: string;
   description?: string;
   createdAt: Date;
@@ -53,21 +39,9 @@ export interface Product {
 export interface CreateProductData {
   name: string;
   brand: string;
-  category: string;
   barcode?: string;
   rating: number;
-  reviewCount: number;
-  ingredients: string[];
-  nutritionalInfo: {
-    protein: number;
-    fat: number;
-    fiber: number;
-    moisture: number;
-  };
-  allergens: string[];
-  lifeStage: string[];
-  size: string[];
-  price: number;
+  ingredients: Ingredient[];
   imageUrl?: string;
   description?: string;
 }
@@ -80,21 +54,9 @@ export interface CreateProductData {
 export interface UpdateProductData {
   name?: string;
   brand?: string;
-  category?: string;
   barcode?: string;
   rating?: number;
-  reviewCount?: number;
-  ingredients?: string[];
-  nutritionalInfo?: {
-    protein?: number;
-    fat?: number;
-    fiber?: number;
-    moisture?: number;
-  };
-  allergens?: string[];
-  lifeStage?: string[];
-  size?: string[];
-  price?: number;
+  ingredients?: Ingredient[];
   imageUrl?: string;
   description?: string;
 }

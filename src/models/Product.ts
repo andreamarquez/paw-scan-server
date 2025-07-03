@@ -24,6 +24,16 @@ import { Product } from '../types';
  * });
  * ```
  */
+const ingredientSchema = new Schema(
+  {
+    id: { type: String, default: uuidv4, required: false },
+    name: { type: String, required: true },
+    status: { type: String, enum: ['excellent', 'good', 'fair', 'poor'], required: true },
+    description: { type: String, required: true },
+  },
+  { _id: false }
+);
+
 const productSchema = new Schema<Product & Document>(
   {
     _id: {
@@ -35,18 +45,6 @@ const productSchema = new Schema<Product & Document>(
       required: [true, 'Product name is required'],
       trim: true,
       maxlength: [200, 'Product name cannot exceed 200 characters'],
-    },
-    brand: {
-      type: String,
-      required: [true, 'Brand is required'],
-      trim: true,
-      maxlength: [100, 'Brand name cannot exceed 100 characters'],
-    },
-    category: {
-      type: String,
-      required: [true, 'Category is required'],
-      trim: true,
-      maxlength: [100, 'Category name cannot exceed 100 characters'],
     },
     barcode: {
       type: String,
@@ -60,82 +58,28 @@ const productSchema = new Schema<Product & Document>(
         message: 'Barcode must be 8-14 digits',
       },
     },
+    brand: {
+      type: String,
+      required: [true, 'Brand is required'],
+      trim: true,
+      maxlength: [100, 'Brand name cannot exceed 100 characters'],
+    },
     rating: {
       type: Number,
       required: [true, 'Rating is required'],
       min: [0, 'Rating must be at least 0'],
+      // Fixme: max is 10, but we need to change it to 5
       max: [10, 'Rating cannot exceed 10'],
     },
-    reviewCount: {
-      type: Number,
-      required: [true, 'Review count is required'],
-      min: [0, 'Review count must be at least 0'],
-    },
     ingredients: {
-      type: [String],
+      type: [ingredientSchema],
       required: [true, 'At least one ingredient is required'],
       validate: {
-        validator: function (v: string[]) {
+        validator: function (v: any[]) {
           return v.length > 0;
         },
         message: 'At least one ingredient is required',
       },
-    },
-    nutritionalInfo: {
-      protein: {
-        type: Number,
-        required: [true, 'Protein content is required'],
-        min: [0, 'Protein must be at least 0'],
-        max: [100, 'Protein cannot exceed 100'],
-      },
-      fat: {
-        type: Number,
-        required: [true, 'Fat content is required'],
-        min: [0, 'Fat must be at least 0'],
-        max: [100, 'Fat cannot exceed 100'],
-      },
-      fiber: {
-        type: Number,
-        required: [true, 'Fiber content is required'],
-        min: [0, 'Fiber must be at least 0'],
-        max: [100, 'Fiber cannot exceed 100'],
-      },
-      moisture: {
-        type: Number,
-        required: [true, 'Moisture content is required'],
-        min: [0, 'Moisture must be at least 0'],
-        max: [100, 'Moisture cannot exceed 100'],
-      },
-    },
-    allergens: {
-      type: [String],
-      required: [true, 'Allergens list is required'],
-      default: [],
-    },
-    lifeStage: {
-      type: [String],
-      required: [true, 'At least one life stage is required'],
-      validate: {
-        validator: function (v: string[]) {
-          return v.length > 0;
-        },
-        message: 'At least one life stage is required',
-      },
-    },
-    size: {
-      type: [String],
-      required: [true, 'At least one size is required'],
-      validate: {
-        validator: function (v: string[]) {
-          return v.length > 0;
-        },
-        message: 'At least one size is required',
-      },
-    },
-    price: {
-      type: Number,
-      required: [true, 'Price is required'],
-      min: [0, 'Price must be at least 0'],
     },
     imageUrl: {
       type: String,
@@ -178,16 +122,12 @@ const productSchema = new Schema<Product & Document>(
 productSchema.index({ barcode: 1 }, { unique: true, sparse: true });
 productSchema.index({ name: 1, brand: 1 }, { unique: true });
 productSchema.index({ brand: 1 });
-productSchema.index({ category: 1 });
-productSchema.index({ rating: 1 });
-productSchema.index({ price: 1 });
 productSchema.index({ createdAt: -1 });
 
 // Text index for search functionality
 productSchema.index({
   name: 'text',
   brand: 'text',
-  category: 'text',
   ingredients: 'text',
 });
 
