@@ -5,7 +5,7 @@
 
 set -e
 
-echo "🔧 Setting up MongoDB initialization scripts..."
+echo "🔧 Setting up initialization..."
 
 # Check if .env file exists
 if [ ! -f ".env" ]; then
@@ -61,25 +61,7 @@ if [ ${#MISSING_VARS[@]} -ne 0 ]; then
     exit 1
 fi
 
-# Create mongo-init.js from template
-if [ -f "./scripts/mongo-init.template.js" ]; then
-    cp ./scripts/mongo-init.template.js ./scripts/mongo-init.js
-    echo "✅ Created mongo-init.js from template"
-else
-    echo "❌ mongo-init.template.js not found"
-    exit 1
-fi
-
-# Create mongo-init-test.js from template
-if [ -f "./scripts/mongo-init-test.template.js" ]; then
-    cp ./scripts/mongo-init-test.template.js ./scripts/mongo-init-test.js
-    echo "✅ Created mongo-init-test.js from template"
-else
-    echo "❌ mongo-init-test.template.js not found"
-    exit 1
-fi
-
-echo "✅ MongoDB initialization setup complete!"
+echo "✅ Initialization setup complete!"
 echo ""
 echo "📝 Next steps:"
 echo "   1. Review mongo-init.js and mongo-init-test.js and update credentials if needed"

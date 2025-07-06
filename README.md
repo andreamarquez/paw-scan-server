@@ -196,12 +196,11 @@ npm run dev
 #### 1. Run Tests with Docker MongoDB
 ```bash
 # Start test MongoDB, run tests, and cleanup
-npm run test:docker
+docker compose -f docker-compose.test.yml up -d
 
-# Or manually
-npm run docker:test:up
 npm test
-npm run docker:test:down
+
+docker compose -f docker-compose.test.yml down -d
 ```
 
 #### 2. Test Environment
@@ -456,7 +455,6 @@ npm run lint         # Run ESLint
 npm run lint:fix     # Fix ESLint errors automatically
 npm run format       # Format code with Prettier
 npm run generate:openapi # Generate OpenAPI YAML file
-npm run docs:serve   # Serve OpenAPI documentation
 ```
 
 ### Code Quality
@@ -627,7 +625,7 @@ MONGO_ADMIN_PASSWORD=your_admin_password
 #### 4. Files Security
 
 - ✅ `mongo-init.js` - **Excluded from git** (contains credentials)
-- ✅ `mongo-init.template.js` - **Included in git** (template only)
+- ✅ `mongo-init-test.js` - **Included in git** (contains test credentials only)
 - ✅ `.env` - **Excluded from git** (contains credentials)
 - ✅ `env.example` - **Included in git** (template only)
 
@@ -672,7 +670,7 @@ MONGODB_URI_TEST=mongodb://paw_scan_test_user:paw_scan_test_password@localhost:2
 npm run dev:docker
 
 # Or start them separately
-npm run docker:up
+docker compose -f docker-compose.dev.yml up -d 
 npm run dev
 ```
 

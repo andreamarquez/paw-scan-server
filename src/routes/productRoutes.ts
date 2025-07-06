@@ -69,65 +69,7 @@ const router = Router();
  */
 router.get('/', validateProductQuery, productController.getProducts);
 
-/**
- * @swagger
- * /products/brands:
- *   get:
- *     summary: Get all unique brands
- *     tags: [Products]
- *     responses:
- *       200:
- *         description: List of brands
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 success:
- *                   type: boolean
- *                 data:
- *                   type: array
- *                   items:
- *                     type: string
- */
-router.get('/brands', productController.getBrands);
 
-/**
- * @swagger
- * /products/brand/{brand}:
- *   get:
- *     summary: Get products by brand
- *     tags: [Products]
- *     parameters:
- *       - in: path
- *         name: brand
- *         required: true
- *         schema:
- *           type: string
- *         description: Brand name
- *       - in: query
- *         name: page
- *         schema:
- *           type: integer
- *           default: 1
- *         description: Page number
- *       - in: query
- *         name: limit
- *         schema:
- *           type: integer
- *           default: 10
- *         description: Number of items per page
- *     responses:
- *       200:
- *         description: List of products by brand
- *         content:
- *           application/json:
- *             schema:
- *               $ref: '#/components/schemas/PaginatedResponse'
- *       400:
- *         description: Bad request
- */
-router.get('/brand/:brand', validateProductQuery, productController.getProductsByBrand);
 
 /**
  * @swagger

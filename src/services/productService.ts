@@ -4,7 +4,6 @@ import {
   CreateProductData, 
   UpdateProductData, 
   ProductQuery, 
-  ProductQueryParams,
   PaginatedResponse 
 } from '../types';
 import { createError } from '../middleware/errorHandler';
@@ -344,119 +343,5 @@ export class ProductService {
     }
   }
 
-  /**
-   * Retrieves all unique brand names from the database.
-   * Results are sorted alphabetically.
-   * 
-   * @returns Promise<string[]> - Array of brand names
-   * 
-   * @example
-   * ```typescript
-   * const brands = await productService.getBrands();
-   * console.log(brands); // ['Brand A', 'Brand B', 'PetCo', 'PetSmart']
-   * ```
-   */
-  async getBrands(): Promise<string[]> {
-    try {
-      const brands = await ProductModel.distinct('brand');
-      return brands.sort();
-    } catch (error) {
-      throw createError('Failed to retrieve brands', 500);
-    }
-  }
 
-  /**
-   * Retrieves products by brand with optional filtering and pagination.
-   * 
-   * @param brand - The brand name to filter by
-   * @param query - Query parameters for filtering and pagination
-   * @returns Promise<PaginatedResponse<Product>> - Paginated list of products for the brand
-   * 
-   * @example
-   * ```typescript
-   * const result = await productService.getProductsByBrand('PetCo', { 
-   *   page: 1, 
-   *   limit: 10,
-   *   minRating: 7
-   * });
-   * ```
-   */
-  async getProductsByBrand(brand: string, query: ProductQueryParams): Promise<PaginatedResponse<Product>> {
-    try {
-      const {
-        page = 1,
-        limit = 10,
-        search,
-        minRating,
-        maxRating,
-        minPrice,
-        maxPrice,
-        allergens,
-        lifeStage,
-        size,
-      } = query;
-
-      const skip = (parseInt(page as string) - 1) * parseInt(limit as string);
-      const filter: any = {
-        brand: { $regex: brand, $options: 'i' }
-      };
-
-      // Add search filter
-      if (search) {
-        filter.$text = { $search: search };
-      }
-
-      // Add rating range filter
-      if (minRating || maxRating) {
-        filter.rating = {};
-        if (minRating) filter.rating.$gte = parseFloat(minRating);
-        if (maxRating) filter.rating.$lte = parseFloat(maxRating);
-      }
-
-      // Add price range filter
-      if (minPrice || maxPrice) {
-        filter.price = {};
-        if (minPrice) filter.price.$gte = parseFloat(minPrice);
-        if (maxPrice) filter.price.$lte = parseFloat(maxPrice);
-      }
-
-      // Add allergens filter
-      if (allergens) {
-        filter.allergens = { $in: allergens.split(',') };
-      }
-
-      // Add life stage filter
-      if (lifeStage) {
-        filter.lifeStage = { $in: lifeStage.split(',') };
-      }
-
-      // Add size filter
-      if (size) {
-        filter.size = { $in: size.split(',') };
-      }
-
-      const [products, total] = await Promise.all([
-        ProductModel.find(filter)
-          .sort({ createdAt: -1 })
-          .skip(skip)
-          .limit(parseInt(limit as string))
-          .lean(),
-        ProductModel.countDocuments(filter),
-      ]);
-
-      const totalPages = Math.ceil(total / parseInt(limit as string));
-
-      return {
-        data: products,
-        pagination: {
-          page: parseInt(page as string),
-          limit: parseInt(limit as string),
-          total,
-          totalPages,
-        },
-      };
-    } catch (error) {
-      throw createError('Failed to retrieve products by brand', 500);
-    }
-  }
 } 
