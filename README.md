@@ -625,7 +625,7 @@ MONGO_ADMIN_PASSWORD=your_admin_password
 #### 4. Files Security
 
 - ✅ `mongo-init.js` - **Excluded from git** (contains credentials)
-- ✅ `mongo-init.template.js` - **Included in git** (template only)
+- ✅ `mongo-init-test.js` - **Included in git** (contains test credentials only)
 - ✅ `.env` - **Excluded from git** (contains credentials)
 - ✅ `env.example` - **Included in git** (template only)
 

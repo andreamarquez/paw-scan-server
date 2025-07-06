@@ -22,7 +22,7 @@
     "docker:dev:down": "docker compose -f docker-compose.dev.yml down",
     "docker:dev:clean": "docker compose -f docker-compose.dev.yml down -v --remove-orphans",
     "dev:simple": "npm run docker:dev:up && npm run dev",
-    "setup:mongo": "./scripts/setup-mongo-init.sh"
+    "check:env:vars": "./scripts/check-env.sh"
   },
   "keywords": [
     "pet",
