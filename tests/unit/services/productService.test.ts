@@ -1,6 +1,7 @@
 import { ProductService } from '../../../src/services/productService';
 import { ProductModel } from '../../../src/models/Product';
 import { CreateProductData } from '../../../src/types';
+import { Ingredient } from '../../../src/types';
 
 describe('ProductService', () => {
   let productService: ProductService;
@@ -9,24 +10,18 @@ describe('ProductService', () => {
     productService = new ProductService();
   });
 
+  const mockIngredient: Ingredient = {
+    id: '11111111-1111-1111-1111-111111111111',
+    name: 'Chicken',
+    status: 'excellent',
+    description: 'High-quality protein source.'
+  };
   const mockProductData: CreateProductData = {
     name: 'Premium Dog Food',
     brand: 'PetCo',
-    category: 'Dog Food',
     barcode: '1234567890123',
     rating: 8.5,
-    reviewCount: 150,
-    ingredients: ['Chicken', 'Rice', 'Vegetables'],
-    nutritionalInfo: {
-      protein: 25.0,
-      fat: 12.0,
-      fiber: 4.0,
-      moisture: 10.0,
-    },
-    allergens: ['Chicken'],
-    lifeStage: ['Adult'],
-    size: ['Medium'],
-    price: 29.99,
+    ingredients: [mockIngredient],
     imageUrl: 'https://example.com/image.jpg',
     description: 'High-quality premium dog food',
   };

@@ -36,11 +36,6 @@ export const validateCreateProduct = [
     .isLength({ min: 1, max: 100 })
     .withMessage('Brand must be between 1 and 100 characters'),
   
-  body('category')
-    .trim()
-    .isLength({ min: 1, max: 100 })
-    .withMessage('Category must be between 1 and 100 characters'),
-  
   body('barcode')
     .optional()
     .trim()
@@ -51,69 +46,23 @@ export const validateCreateProduct = [
     .isFloat({ min: 0, max: 10 })
     .withMessage('Rating must be a number between 0 and 10'),
   
-  body('reviewCount')
-    .isInt({ min: 0 })
-    .withMessage('Review count must be a non-negative integer'),
-  
   body('ingredients')
     .isArray({ min: 1 })
     .withMessage('At least one ingredient is required'),
   
-  body('ingredients.*')
+  body('ingredients.*.name')
     .isString()
-    .trim()
-    .isLength({ min: 1 })
-    .withMessage('Ingredient must be a non-empty string'),
+    .notEmpty()
+    .withMessage('Ingredient name is required'),
   
-  body('nutritionalInfo.protein')
-    .isFloat({ min: 0, max: 100 })
-    .withMessage('Protein must be between 0 and 100'),
+  body('ingredients.*.status')
+    .isIn(['excellent', 'good', 'fair', 'poor'])
+    .withMessage('Invalid ingredient status'),
   
-  body('nutritionalInfo.fat')
-    .isFloat({ min: 0, max: 100 })
-    .withMessage('Fat must be between 0 and 100'),
-  
-  body('nutritionalInfo.fiber')
-    .isFloat({ min: 0, max: 100 })
-    .withMessage('Fiber must be between 0 and 100'),
-  
-  body('nutritionalInfo.moisture')
-    .isFloat({ min: 0, max: 100 })
-    .withMessage('Moisture must be between 0 and 100'),
-  
-  body('allergens')
-    .isArray()
-    .withMessage('Allergens must be an array'),
-  
-  body('allergens.*')
+  body('ingredients.*.description')
     .isString()
-    .trim()
-    .isLength({ min: 1 })
-    .withMessage('Allergen must be a non-empty string'),
-  
-  body('lifeStage')
-    .isArray({ min: 1 })
-    .withMessage('At least one life stage is required'),
-  
-  body('lifeStage.*')
-    .isString()
-    .trim()
-    .isLength({ min: 1 })
-    .withMessage('Life stage must be a non-empty string'),
-  
-  body('size')
-    .isArray({ min: 1 })
-    .withMessage('At least one size is required'),
-  
-  body('size.*')
-    .isString()
-    .trim()
-    .isLength({ min: 1 })
-    .withMessage('Size must be a non-empty string'),
-  
-  body('price')
-    .isFloat({ min: 0 })
-    .withMessage('Price must be a non-negative number'),
+    .notEmpty()
+    .withMessage('Ingredient description is required'),
   
   body('imageUrl')
     .optional()
@@ -144,12 +93,6 @@ export const validateUpdateProduct = [
     .isLength({ min: 1, max: 100 })
     .withMessage('Brand must be between 1 and 100 characters'),
   
-  body('category')
-    .optional()
-    .trim()
-    .isLength({ min: 1, max: 100 })
-    .withMessage('Category must be between 1 and 100 characters'),
-  
   body('barcode')
     .optional()
     .trim()
@@ -161,83 +104,27 @@ export const validateUpdateProduct = [
     .isFloat({ min: 0, max: 10 })
     .withMessage('Rating must be a number between 0 and 10'),
   
-  body('reviewCount')
-    .optional()
-    .isInt({ min: 0 })
-    .withMessage('Review count must be a non-negative integer'),
-  
   body('ingredients')
     .optional()
     .isArray({ min: 1 })
     .withMessage('At least one ingredient is required'),
   
-  body('ingredients.*')
+  body('ingredients.*.name')
     .optional()
     .isString()
-    .trim()
-    .isLength({ min: 1 })
-    .withMessage('Ingredient must be a non-empty string'),
+    .notEmpty()
+    .withMessage('Ingredient name is required'),
   
-  body('nutritionalInfo.protein')
+  body('ingredients.*.status')
     .optional()
-    .isFloat({ min: 0, max: 100 })
-    .withMessage('Protein must be between 0 and 100'),
+    .isIn(['excellent', 'good', 'fair', 'poor'])
+    .withMessage('Invalid ingredient status'),
   
-  body('nutritionalInfo.fat')
-    .optional()
-    .isFloat({ min: 0, max: 100 })
-    .withMessage('Fat must be between 0 and 100'),
-  
-  body('nutritionalInfo.fiber')
-    .optional()
-    .isFloat({ min: 0, max: 100 })
-    .withMessage('Fiber must be between 0 and 100'),
-  
-  body('nutritionalInfo.moisture')
-    .optional()
-    .isFloat({ min: 0, max: 100 })
-    .withMessage('Moisture must be between 0 and 100'),
-  
-  body('allergens')
-    .optional()
-    .isArray()
-    .withMessage('Allergens must be an array'),
-  
-  body('allergens.*')
+  body('ingredients.*.description')
     .optional()
     .isString()
-    .trim()
-    .isLength({ min: 1 })
-    .withMessage('Allergen must be a non-empty string'),
-  
-  body('lifeStage')
-    .optional()
-    .isArray({ min: 1 })
-    .withMessage('At least one life stage is required'),
-  
-  body('lifeStage.*')
-    .optional()
-    .isString()
-    .trim()
-    .isLength({ min: 1 })
-    .withMessage('Life stage must be a non-empty string'),
-  
-  body('size')
-    .optional()
-    .isArray({ min: 1 })
-    .withMessage('At least one size is required'),
-  
-  body('size.*')
-    .optional()
-    .isString()
-    .trim()
-    .isLength({ min: 1 })
-    .withMessage('Size must be a non-empty string'),
-  
-  body('price')
-    .optional()
-    .isFloat({ min: 0 })
-    .withMessage('Price must be a non-negative number'),
+    .notEmpty()
+    .withMessage('Ingredient description is required'),
   
   body('imageUrl')
     .optional()
