@@ -217,46 +217,5 @@ describe('ProductService', () => {
     });
   });
 
-  describe('getBrands', () => {
-    it('should return sorted list of brands', async () => {
-      const mockBrands = ['Brand C', 'Brand A', 'Brand B'];
-      jest.spyOn(ProductModel, 'distinct').mockResolvedValue(mockBrands);
 
-      const result = await productService.getBrands();
-
-      expect(result).toEqual(['Brand A', 'Brand B', 'Brand C']);
-      expect(ProductModel.distinct).toHaveBeenCalledWith('brand');
-    });
-  });
-
-  describe('getProductsByBrand', () => {
-    it('should return products by brand with pagination', async () => {
-      const mockProducts = [
-        { ...mockProductData, id: '507f1f77bcf86cd799439011' },
-        { ...mockProductData, id: '507f1f77bcf86cd799439012', name: 'Cat Food' },
-      ];
-
-      jest.spyOn(ProductModel, 'find').mockReturnValue({
-        sort: jest.fn().mockReturnValue({
-          skip: jest.fn().mockReturnValue({
-            limit: jest.fn().mockReturnValue({
-              lean: jest.fn().mockResolvedValue(mockProducts),
-            }),
-          }),
-        }),
-      } as any);
-
-      jest.spyOn(ProductModel, 'countDocuments').mockResolvedValue(2);
-
-      const result = await productService.getProductsByBrand('PetCo', { page: '1', limit: '10' });
-
-      expect(result.data).toEqual(mockProducts);
-      expect(result.pagination).toEqual({
-        page: 1,
-        limit: 10,
-        total: 2,
-        totalPages: 1,
-      });
-    });
-  });
 }); 

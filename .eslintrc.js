@@ -8,6 +8,7 @@ module.exports = {
   env: {
     node: true,
     es2020: true,
+    jest: true
   },
   parserOptions: {
     ecmaVersion: 2020,
@@ -23,4 +24,15 @@ module.exports = {
     'no-var': 'error',
   },
   ignorePatterns: ['dist/', 'node_modules/', 'coverage/'],
+  overrides: [
+    {
+      files: ['tests/**/*.ts', '**/*.test.ts', '**/*.spec.ts'],
+      env: {
+        jest: true
+      },
+      rules: {
+        'no-console': 'off'
+      }
+    }
+  ]
 }; 

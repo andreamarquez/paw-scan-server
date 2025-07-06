@@ -3,7 +3,6 @@ import { ProductService } from '../services/productService';
 import { 
   ProductRequest,
   BarcodeRequest,
-  BrandRequest,
   ProductQueryRequest,
   CreateProductRequest,
   UpdateProductRequest
@@ -16,6 +15,37 @@ const productService = new ProductService();
  * Uses typed request interfaces for better type safety.
  */
 export const productController = {
+    /**
+   * Get a product by barcode
+   * @param req - Express request object with barcode parameter
+   * @param res - Express response object
+   */
+    getProductByBarcode: async (req: BarcodeRequest, res: Response): Promise<void> => {
+      try {
+        const product = await productService.getProductByBarcode(req.params.barcode);
+        
+        if (!product) {
+          res.status(404).json({
+            success: false,
+            message: 'Product not found'
+          });
+          return;
+        }
+  
+        res.json({
+          success: true,
+          data: product
+        });
+      } catch (error) {
+        const statusCode = error instanceof Error && 'statusCode' in error ? (error as any).statusCode : 500;
+        const message = error instanceof Error && 'statusCode' in error ? error.message : 'Failed to fetch product by barcode';
+        res.status(statusCode).json({
+          success: false,
+          message: message
+        });
+      }
+    },
+  // ----------------------Back Office only for now------------------------
   /**
    * Get all products with optional filtering and pagination
    * @param req - Express request object with query parameters
@@ -76,37 +106,6 @@ export const productController = {
     } catch (error) {
       const statusCode = error instanceof Error && 'statusCode' in error ? (error as any).statusCode : 500;
       const message = error instanceof Error && 'statusCode' in error ? error.message : 'Failed to fetch product';
-      res.status(statusCode).json({
-        success: false,
-        message: message
-      });
-    }
-  },
-
-  /**
-   * Get a product by barcode
-   * @param req - Express request object with barcode parameter
-   * @param res - Express response object
-   */
-  getProductByBarcode: async (req: BarcodeRequest, res: Response): Promise<void> => {
-    try {
-      const product = await productService.getProductByBarcode(req.params.barcode);
-      
-      if (!product) {
-        res.status(404).json({
-          success: false,
-          message: 'Product not found'
-        });
-        return;
-      }
-
-      res.json({
-        success: true,
-        data: product
-      });
-    } catch (error) {
-      const statusCode = error instanceof Error && 'statusCode' in error ? (error as any).statusCode : 500;
-      const message = error instanceof Error && 'statusCode' in error ? error.message : 'Failed to fetch product by barcode';
       res.status(statusCode).json({
         success: false,
         message: message
@@ -192,50 +191,5 @@ export const productController = {
     }
   },
 
-  /**
-   * Get all unique brands
-   * @param req - Express request object
-   * @param res - Express response object
-   */
-  getBrands: async (_req: ProductQueryRequest, res: Response): Promise<void> => {
-    try {
-      const brands = await productService.getBrands();
-      res.json({
-        success: true,
-        data: brands
-      });
-    } catch (error) {
-      res.status(500).json({
-        success: false,
-        message: 'Failed to fetch brands',
-        error: error instanceof Error ? error.message : 'Unknown error'
-      });
-    }
-  },
 
-  /**
-   * Get products by brand
-   * @param req - Express request object with brand parameter
-   * @param res - Express response object
-   */
-  getProductsByBrand: async (req: BrandRequest & ProductQueryRequest, res: Response): Promise<void> => {
-    try {
-      const result = await productService.getProductsByBrand(req.params.brand, req.query);
-      res.json({
-        success: true,
-        data: result,
-        pagination: {
-          page: result.pagination.page,
-          limit: result.pagination.limit,
-          total: result.pagination.total
-        }
-      });
-    } catch (error) {
-      res.status(500).json({
-        success: false,
-        message: 'Failed to fetch products by brand',
-        error: error instanceof Error ? error.message : 'Unknown error'
-      });
-    }
-  }
 }; 

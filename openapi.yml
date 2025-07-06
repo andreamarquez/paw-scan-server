@@ -1,619 +1,347 @@
-{
-  "openapi": "3.0.0",
-  "info": {
-    "title": "Paw Scan API",
-    "version": "1.0.0",
-    "description": "API for Paw Scan pet food rating application",
-    "contact": {
-      "name": "Paw Scan Team"
-    }
-  },
-  "servers": [
-    {
-      "url": "http://localhost:3000/api/v1",
-      "description": "Development server"
-    }
-  ],
-  "components": {
-    "schemas": {
-      "Ingredient": {
-        "type": "object",
-        "properties": {
-          "id": {
-            "type": "string",
-            "description": "UUID for the ingredient"
-          },
-          "name": {
-            "type": "string",
-            "description": "Name of the ingredient"
-          },
-          "status": {
-            "type": "string",
-            "enum": [
-              "excellent",
-              "good",
-              "fair",
-              "poor"
-            ],
-            "description": "Quality status"
-          },
-          "description": {
-            "type": "string",
-            "description": "Description of the ingredient"
-          }
-        },
-        "required": [
-          "name",
-          "status",
-          "description"
-        ]
-      },
-      "Product": {
-        "type": "object",
-        "properties": {
-          "id": {
-            "type": "string",
-            "description": "UUID for the product"
-          },
-          "name": {
-            "type": "string"
-          },
-          "barcode": {
-            "type": "string"
-          },
-          "brand": {
-            "type": "string"
-          },
-          "rating": {
-            "type": "number"
-          },
-          "ingredients": {
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/Ingredient"
-            }
-          },
-          "imageUrl": {
-            "type": "string"
-          },
-          "description": {
-            "type": "string"
-          },
-          "createdAt": {
-            "type": "string",
-            "format": "date-time"
-          },
-          "updatedAt": {
-            "type": "string",
-            "format": "date-time"
-          }
-        },
-        "required": [
-          "id",
-          "name",
-          "brand",
-          "rating",
-          "ingredients",
-          "createdAt",
-          "updatedAt"
-        ]
-      },
-      "CreateProduct": {
-        "type": "object",
-        "properties": {
-          "name": {
-            "type": "string"
-          },
-          "barcode": {
-            "type": "string"
-          },
-          "brand": {
-            "type": "string"
-          },
-          "rating": {
-            "type": "number"
-          },
-          "ingredients": {
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/Ingredient"
-            }
-          },
-          "imageUrl": {
-            "type": "string"
-          },
-          "description": {
-            "type": "string"
-          }
-        },
-        "required": [
-          "name",
-          "brand",
-          "rating",
-          "ingredients"
-        ]
-      },
-      "ApiResponse": {
-        "type": "object",
-        "properties": {
-          "success": {
-            "type": "boolean",
-            "description": "Indicates if the request was successful"
-          },
-          "data": {
-            "description": "Response data"
-          },
-          "message": {
-            "type": "string",
-            "description": "Success message"
-          },
-          "error": {
-            "type": "string",
-            "description": "Error message"
-          }
-        }
-      },
-      "PaginatedResponse": {
-        "type": "object",
-        "properties": {
-          "data": {
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/Product"
-            }
-          },
-          "pagination": {
-            "type": "object",
-            "properties": {
-              "page": {
-                "type": "integer",
-                "description": "Current page number"
-              },
-              "limit": {
-                "type": "integer",
-                "description": "Number of items per page"
-              },
-              "total": {
-                "type": "integer",
-                "description": "Total number of items"
-              },
-              "totalPages": {
-                "type": "integer",
-                "description": "Total number of pages"
-              }
-            }
-          }
-        }
-      }
-    }
-  },
-  "paths": {
-    "/products": {
-      "get": {
-        "summary": "Get all products with pagination and filters",
-        "tags": [
-          "Products"
-        ],
-        "parameters": [
-          {
-            "in": "query",
-            "name": "page",
-            "schema": {
-              "type": "integer",
-              "default": 1
-            },
-            "description": "Page number"
-          },
-          {
-            "in": "query",
-            "name": "limit",
-            "schema": {
-              "type": "integer",
-              "default": 10
-            },
-            "description": "Number of items per page"
-          },
-          {
-            "in": "query",
-            "name": "search",
-            "schema": {
-              "type": "string"
-            },
-            "description": "Search term for product name or brand"
-          },
-          {
-            "in": "query",
-            "name": "brand",
-            "schema": {
-              "type": "string"
-            },
-            "description": "Filter by brand"
-          },
-          {
-            "in": "query",
-            "name": "minRating",
-            "schema": {
-              "type": "number",
-              "minimum": 0,
-              "maximum": 10
-            },
-            "description": "Minimum rating filter"
-          },
-          {
-            "in": "query",
-            "name": "maxRating",
-            "schema": {
-              "type": "number",
-              "minimum": 0,
-              "maximum": 10
-            },
-            "description": "Maximum rating filter"
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "List of products",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/PaginatedResponse"
-                }
-              }
-            }
-          },
-          "400": {
-            "description": "Bad request",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ApiResponse"
-                }
-              }
-            }
-          }
-        }
-      },
-      "post": {
-        "summary": "Create a new product",
-        "tags": [
-          "Products"
-        ],
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/CreateProduct"
-              }
-            }
-          }
-        },
-        "responses": {
-          "201": {
-            "description": "Product created successfully",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "success": {
-                      "type": "boolean"
-                    },
-                    "data": {
-                      "$ref": "#/components/schemas/Product"
-                    },
-                    "message": {
-                      "type": "string"
-                    }
-                  }
-                }
-              }
-            }
-          },
-          "400": {
-            "description": "Bad request",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ApiResponse"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/products/brands": {
-      "get": {
-        "summary": "Get all unique brands",
-        "tags": [
-          "Products"
-        ],
-        "responses": {
-          "200": {
-            "description": "List of brands",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "success": {
-                      "type": "boolean"
-                    },
-                    "data": {
-                      "type": "array",
-                      "items": {
-                        "type": "string"
-                      }
-                    }
-                  }
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/products/brand/{brand}": {
-      "get": {
-        "summary": "Get products by brand",
-        "tags": [
-          "Products"
-        ],
-        "parameters": [
-          {
-            "in": "path",
-            "name": "brand",
-            "required": true,
-            "schema": {
-              "type": "string"
-            },
-            "description": "Brand name"
-          },
-          {
-            "in": "query",
-            "name": "page",
-            "schema": {
-              "type": "integer",
-              "default": 1
-            },
-            "description": "Page number"
-          },
-          {
-            "in": "query",
-            "name": "limit",
-            "schema": {
-              "type": "integer",
-              "default": 10
-            },
-            "description": "Number of items per page"
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "List of products by brand",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/PaginatedResponse"
-                }
-              }
-            }
-          },
-          "400": {
-            "description": "Bad request"
-          }
-        }
-      }
-    },
-    "/products/id/{id}": {
-      "get": {
-        "summary": "Get product by ID",
-        "tags": [
-          "Products"
-        ],
-        "parameters": [
-          {
-            "in": "path",
-            "name": "id",
-            "required": true,
-            "schema": {
-              "type": "string"
-            },
-            "description": "Product ID"
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Product details",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "success": {
-                      "type": "boolean"
-                    },
-                    "data": {
-                      "$ref": "#/components/schemas/Product"
-                    }
-                  }
-                }
-              }
-            }
-          },
-          "404": {
-            "description": "Product not found",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ApiResponse"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/products/{barcode}": {
-      "get": {
-        "summary": "Get product by barcode",
-        "tags": [
-          "Products"
-        ],
-        "parameters": [
-          {
-            "in": "path",
-            "name": "barcode",
-            "required": true,
-            "schema": {
-              "type": "string",
-              "pattern": "^[0-9]{8,14}$"
-            },
-            "description": "Product barcode (8-14 digits)"
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Product details",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "success": {
-                      "type": "boolean"
-                    },
-                    "data": {
-                      "$ref": "#/components/schemas/Product"
-                    }
-                  }
-                }
-              }
-            }
-          },
-          "404": {
-            "description": "Product not found",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ApiResponse"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/products/{id}": {
-      "put": {
-        "summary": "Update an existing product",
-        "tags": [
-          "Products"
-        ],
-        "parameters": [
-          {
-            "in": "path",
-            "name": "id",
-            "required": true,
-            "schema": {
-              "type": "string"
-            },
-            "description": "Product ID"
-          }
-        ],
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/Product"
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "Product updated successfully",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "success": {
-                      "type": "boolean"
-                    },
-                    "data": {
-                      "$ref": "#/components/schemas/Product"
-                    },
-                    "message": {
-                      "type": "string"
-                    }
-                  }
-                }
-              }
-            }
-          },
-          "404": {
-            "description": "Product not found",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ApiResponse"
-                }
-              }
-            }
-          }
-        }
-      },
-      "delete": {
-        "summary": "Delete a product",
-        "tags": [
-          "Products"
-        ],
-        "parameters": [
-          {
-            "in": "path",
-            "name": "id",
-            "required": true,
-            "schema": {
-              "type": "string"
-            },
-            "description": "Product ID"
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Product deleted successfully",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "success": {
-                      "type": "boolean"
-                    },
-                    "message": {
-                      "type": "string"
-                    }
-                  }
-                }
-              }
-            }
-          },
-          "404": {
-            "description": "Product not found",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ApiResponse"
-                }
-              }
-            }
-          }
-        }
-      }
-    }
-  },
-  "tags": []
-}
+openapi: 3.0.0
+info:
+  title: Paw Scan API
+  version: 1.0.0
+  description: API for Paw Scan pet food rating application
+  contact:
+    name: Paw Scan Team
+servers:
+  - url: http://localhost:3000/api/v1
+    description: Development server
+components:
+  schemas:
+    Ingredient:
+      type: object
+      properties:
+        id:
+          type: string
+          description: UUID for the ingredient
+        name:
+          type: string
+          description: Name of the ingredient
+        status:
+          type: string
+          enum:
+            - excellent
+            - good
+            - fair
+            - poor
+          description: Quality status
+        description:
+          type: string
+          description: Description of the ingredient
+      required:
+        - name
+        - status
+        - description
+    Product:
+      type: object
+      properties:
+        id:
+          type: string
+          description: UUID for the product
+        name:
+          type: string
+        barcode:
+          type: string
+        brand:
+          type: string
+        rating:
+          type: number
+        ingredients:
+          type: array
+          items:
+            $ref: '#/components/schemas/Ingredient'
+        imageUrl:
+          type: string
+        description:
+          type: string
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+      required:
+        - id
+        - name
+        - brand
+        - rating
+        - ingredients
+        - createdAt
+        - updatedAt
+    CreateProduct:
+      type: object
+      properties:
+        name:
+          type: string
+        barcode:
+          type: string
+        brand:
+          type: string
+        rating:
+          type: number
+        ingredients:
+          type: array
+          items:
+            $ref: '#/components/schemas/Ingredient'
+        imageUrl:
+          type: string
+        description:
+          type: string
+      required:
+        - name
+        - brand
+        - rating
+        - ingredients
+    ApiResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+          description: Indicates if the request was successful
+        data:
+          description: Response data
+        message:
+          type: string
+          description: Success message
+        error:
+          type: string
+          description: Error message
+    PaginatedResponse:
+      type: object
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/Product'
+        pagination:
+          type: object
+          properties:
+            page:
+              type: integer
+              description: Current page number
+            limit:
+              type: integer
+              description: Number of items per page
+            total:
+              type: integer
+              description: Total number of items
+            totalPages:
+              type: integer
+              description: Total number of pages
+paths:
+  /products:
+    get:
+      summary: Get all products with pagination and filters
+      tags:
+        - Products
+      parameters:
+        - in: query
+          name: page
+          schema:
+            type: integer
+            default: 1
+          description: Page number
+        - in: query
+          name: limit
+          schema:
+            type: integer
+            default: 10
+          description: Number of items per page
+        - in: query
+          name: search
+          schema:
+            type: string
+          description: Search term for product name or brand
+        - in: query
+          name: brand
+          schema:
+            type: string
+          description: Filter by brand
+        - in: query
+          name: minRating
+          schema:
+            type: number
+            minimum: 0
+            maximum: 10
+          description: Minimum rating filter
+        - in: query
+          name: maxRating
+          schema:
+            type: number
+            minimum: 0
+            maximum: 10
+          description: Maximum rating filter
+      responses:
+        '200':
+          description: List of products
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedResponse'
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiResponse'
+    post:
+      summary: Create a new product
+      tags:
+        - Products
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateProduct'
+      responses:
+        '201':
+          description: Product created successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  data:
+                    $ref: '#/components/schemas/Product'
+                  message:
+                    type: string
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiResponse'
+  /products/id/{id}:
+    get:
+      summary: Get product by ID
+      tags:
+        - Products
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+          description: Product ID
+      responses:
+        '200':
+          description: Product details
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  data:
+                    $ref: '#/components/schemas/Product'
+        '404':
+          description: Product not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiResponse'
+  /products/{barcode}:
+    get:
+      summary: Get product by barcode
+      tags:
+        - Products
+      parameters:
+        - in: path
+          name: barcode
+          required: true
+          schema:
+            type: string
+            pattern: ^[0-9]{8,14}$
+          description: Product barcode (8-14 digits)
+      responses:
+        '200':
+          description: Product details
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  data:
+                    $ref: '#/components/schemas/Product'
+        '404':
+          description: Product not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiResponse'
+  /products/{id}:
+    put:
+      summary: Update an existing product
+      tags:
+        - Products
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+          description: Product ID
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Product'
+      responses:
+        '200':
+          description: Product updated successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  data:
+                    $ref: '#/components/schemas/Product'
+                  message:
+                    type: string
+        '404':
+          description: Product not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiResponse'
+    delete:
+      summary: Delete a product
+      tags:
+        - Products
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+          description: Product ID
+      responses:
+        '200':
+          description: Product deleted successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  message:
+                    type: string
+        '404':
+          description: Product not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiResponse'
+tags: []

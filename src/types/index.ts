@@ -170,11 +170,7 @@ export interface BarcodeRequest extends Request {
   };
 }
 
-export interface BrandRequest extends Request {
-  params: {
-    brand: string;
-  };
-}
+
 
 export interface ProductQueryRequest extends Request {
   query: ProductQueryParams & { [key: string]: string | string[] | undefined };
